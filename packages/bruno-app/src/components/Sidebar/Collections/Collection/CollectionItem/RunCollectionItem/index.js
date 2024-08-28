@@ -23,10 +23,13 @@ const RunCollectionItem = ({ collection, item, onClose }) => {
     onClose();
   };
 
-  const runLength = item ? get(item, 'items.length', 0) : get(collection, 'items.length', 0);
-  const items = flattenItems(item ? item.items : collection.items);
-  const requestItems = items.filter((item) => item.type !== 'folder');
-  const recursiveRunLength = requestItems.length;
+  const getRequestsCount = (items) => {
+    const requestTypes = ['http-request', 'graphql-request']
+    return items.filter(req => requestTypes.includes(req.type)).length;
+  }
+  const runLength = item ? getRequestsCount(item.items) : get(collection, 'items.length', 0);
+  const flattenedItems = flattenItems(item ? item.items : collection.items);
+  const recursiveRunLength = getRequestsCount(flattenedItems);
 
   return (
     <StyledWrapper>
